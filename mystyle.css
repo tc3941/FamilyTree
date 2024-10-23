@@ -1,0 +1,33 @@
+body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden; /* Hide scrollbars */
+}
+
+.arrow {
+  position: fixed;
+  transform: translateX(-50%); /* Center adjustment */
+  z-index: 1000; /* Ensure it stays above other content */
+  cursor: pointer;
+  color: white;
+  user-select: none;
+}
+
+#top {
+  top: 5%; /* 5% from the top of the screen */
+  left: 50%; /* Center horizontally */
+}
+#bottom {
+  bottom: 5%; /* 5% from the top of the screen */
+  left: 50%; /* Center horizontally */
+  font-family: sans-serif;
+}
+#left {
+  top: 50%; /* 5% from the top of the screen */
+  left: 5%; /* Center horizontally */
+}
+#right {
+  top: 50%; /* 5% from the top of the screen */
+  right: 5%; /* Center horizontally */
+}

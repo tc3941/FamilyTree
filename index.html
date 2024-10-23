@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+  <script src="https://pixijs.download/release/pixi.js"></script>
+  <link rel="stylesheet" href="mystyle.css" />
+  <head> </head>
+  <body class="scrollable-content">
+    <script type="module">
+      const app = new PIXI.Application();
+      await app.init({ background: '#171717', width: 3840, height: 2160 });
+      document.body.appendChild(app.canvas);
+      // load the PNG asynchronously
+      await PIXI.Assets.load('Media/sample.png');
+      let sprite = PIXI.Sprite.from('Media/sample.png');
+      app.stage.addChild(sprite);
+
+      // Add a variable to count up the seconds our demo has been running
+      let elapsed = 0.0;
+      // Tell our application's ticker to run a new callback every frame, passing
+      // in the amount of time that has passed since the last tick
+      app.ticker.add((ticker) => {
+        // Add the time to our total elapsed time
+        elapsed += ticker.deltaTime;
+        // Update the sprite's X position based on the cosine of our elapsed time.  We divide
+        // by 50 to slow the animation down a bit...
+        sprite.x = 100.0 + Math.cos(elapsed / 50.0) * 100.0;
+      });
+
+      const scrollUpArrow = document.getElementById('top');
+      const scrollDownArrow = document.getElementById('bottom');
+      const scrollLeftArrow = document.getElementById('left');
+      const scrollRightArrow = document.getElementById('right');
+
+      scrollUpArrow.addEventListener('click', function () {
+        window.scrollBy({
+          top: -window.innerHeight / 10, // Scroll up by one viewport height
+          behavior: 'smooth', // Smooth scrolling
+        });
+      });
+      scrollDownArrow.addEventListener('click', function () {
+        window.scrollBy({
+          top: window.innerHeight / 10, // Scroll up by one viewport height
+          behavior: 'smooth', // Smooth scrolling
+        });
+      });
+      scrollLeftArrow.addEventListener('click', function () {
+        window.scrollBy({
+          left: -window.innerWidth / 10, // Scroll up by one viewport height
+          behavior: 'smooth', // Smooth scrolling
+        });
+      });
+      scrollRightArrow.addEventListener('click', function () {
+        window.scrollBy({
+          left: window.innerWidth / 10, // Scroll up by one viewport height
+          behavior: 'smooth', // Smooth scrolling
+        });
+      });
+
+      let isDragging = false;
+      let startX, startY, scrollLeft, scrollTop;
+
+      const scrollableContent = document.querySelector('.scrollable-content');
+
+      scrollableContent.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+        isDragging = true;
+        startX = e.clientX;
+        startY = e.clientY;
+        scrollLeft = window.scrollX;
+        scrollTop = window.scrollY;
+        scrollableContent.style.cursor = 'grabbing';
+      });
+
+      window.addEventListener('mouseup', () => {
+        isDragging = false;
+        scrollableContent.style.cursor = 'default';
+      });
+
+      window.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+
+        const xDiff = e.clientX - startX;
+        const yDiff = e.clientY - startY;
+
+        window.scrollTo(scrollLeft - xDiff, scrollTop - yDiff);
+      });
+    </script>
+    <div id="top" class="arrow" onclick="scrollUp">^</div>
+    <div id="left" class="arrow" onclick="scrollDown"><</div>
+    <div id="bottom" class="arrow" onclick="scrollLeft">v</div>
+    <div id="right" class="arrow" onclick="scrollRight">></div>
+  </body>
+</html>
