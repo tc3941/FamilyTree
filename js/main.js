@@ -1,4 +1,6 @@
-//import { Graphics, Application } from 'pixi.js';
+import { Cell } from './cell.js';
+import { Member } from './member.js';
+
 window.onload = async () => {
   //const { Graphics } = require('pixi.js');
   const graphics = new PIXI.Graphics();
@@ -8,6 +10,79 @@ window.onload = async () => {
   // load the PNG asynchronously
   await PIXI.Assets.load('Media/sample.png');
   let sprite = PIXI.Sprite.from('Media/sample.png');
+
+  const style = new PIXI.TextStyle({
+    fill: '#e0e0e0',
+    fontFamily: 'Georgia',
+    fontSize: 28,
+    align: 'center',
+  });
+  let self = new Member({
+    firstName: 'Theodore',
+    lastName: 'Conyers Jr',
+    age: 28,
+  });
+  let rootFamilyMember = new Cell(self);
+
+  //console.log(self);
+  //const cellContainer = new PIXI.Container();
+
+  fetch('family.json')
+    .then((response) => response.json())
+    .then((familyData) => {
+      const familyMembers = familyData.family.map(
+        (memberData) => new Member(memberData)
+      );
+      console.log(familyMembers);
+    })
+    .catch((error) => console.error('Error loading family data:', error));
+
+  //const text = new PIXI.Text({ text: rootFamilyMember.getName(), style });
+  /*
+  function getStringWidth(input, font) {
+    // Create a hidden span element
+    const span = document.createElement('span');
+    span.style.font = font; // Set the font if needed
+    span.style.visibility = 'hidden';
+    span.textContent = input;
+
+    // Append the span to the document body
+    document.body.appendChild(span);
+
+    // Get the width of the span
+    const width = span.offsetWidth;
+
+    // Remove the span from the document body
+    document.body.removeChild(span);
+
+    return width;
+  }*/
+  /*
+  let cellTopLine = new PIXI.Graphics();
+  cellTopLine.moveTo(
+    app.canvas.width / 2 +
+      getStringWidth(
+        'Theodore Conyers Jr',
+        style.fontSize * 0.1 + 'px ' + style.fontFamily
+      ),
+    app.canvas.height / 2 + style.fontSize + 2
+  );
+  cellTopLine.lineTo(
+    app.canvas.width / 2 +
+      getStringWidth(
+        'Theodore Conyers Jr',
+        style.fontSize * 0.9 + 'px ' + style.fontFamily
+      ),
+    app.canvas.height / 2 + style.fontSize + 2
+  );
+  cellTopLine.stroke({ width: 1, color: 0xffffff });
+
+  cellContainer.addChild(cellTopLine);*/
+  //text.x = app.canvas.width / 2;
+  //text.y = app.canvas.height / 2;
+
+  rootFamilyMember.draw(app.canvas.width, app.canvas.height);
+  app.stage.addChild(rootFamilyMember.cellContainer);
 
   let borderTop = new PIXI.Graphics();
   let borderBottom = new PIXI.Graphics();

@@ -1,0 +1,69 @@
+{
+  "family": [
+    {
+      "firstName": "Theodore",
+      "lastName": "Conyers",
+      "age": 28,
+      "suffix": "Jr.",
+      "generation": 1,
+      "id": 1,
+      "children": [
+        {
+          "firstName": "Jane",
+          "lastName": "Doe",
+          "age": 1,
+          "suffix": "",
+          "generation": 2,
+          "children": [],
+          "id": 96
+        }
+      ]
+    },
+    {
+      "firstName": "Theodore",
+      "lastName": "Conyers",
+      "age": 48,
+      "suffix": "",
+      "generation": 1,
+      "id": 3,
+      "children": []
+    },
+    {
+      "firstName": "Latise",
+      "lastName": "Roper",
+      "age": 46,
+      "suffix": "",
+      "generation": 1,
+      "id": 2,
+      "children": [
+        {
+          "firstName": "Theodore",
+          "lastName": "Conyers",
+          "age": 28,
+          "suffix": "Jr.",
+          "generation": 2,
+          "children": [],
+          "id": 1
+        },
+        {
+          "firstName": "Morgan",
+          "lastName": "Roper",
+          "age": 14,
+          "suffix": "",
+          "generation": 2,
+          "children": [],
+          "id": 4
+        },
+        {
+          "firstName": "Shahannah",
+          "lastName": "Mizelle",
+          "age": 25,
+          "suffix": "",
+          "generation": 2,
+          "children": [],
+          "id": 5
+        }
+      ]
+    }
+  ]
+}
