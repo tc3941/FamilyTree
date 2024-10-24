@@ -4,6 +4,8 @@
   <link rel="stylesheet" href="mystyle.css" />
   <head> </head>
   <body class="scrollable-content">
+    <script src="js/main.js" type="module"></script>
+    <!--
     <script type="module">
       const app = new PIXI.Application();
       await app.init({ background: '#171717', width: 3840, height: 2160 });
@@ -83,10 +85,12 @@
 
         window.scrollTo(scrollLeft - xDiff, scrollTop - yDiff);
       });
+      let borderTop = new borderTop.rect();
+      -->
     </script>
-    <div id="top" class="arrow" onclick="scrollUp">^</div>
-    <div id="left" class="arrow" onclick="scrollDown"><</div>
-    <div id="bottom" class="arrow" onclick="scrollLeft">v</div>
-    <div id="right" class="arrow" onclick="scrollRight">></div>
+    <div id="top" class="arrow" >^</div>
+    <div id="left" class="arrow" ><</div>
+    <div id="bottom" class="arrow" >v</div>
+    <div id="right" class="arrow" >></div>
   </body>
 </html>

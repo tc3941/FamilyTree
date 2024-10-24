@@ -12,11 +12,13 @@ body {
   cursor: pointer;
   color: white;
   user-select: none;
+  display: none;
 }
 
 #top {
   top: 5%; /* 5% from the top of the screen */
   left: 50%; /* Center horizontally */
+  font-family: sans-serif;
 }
 #bottom {
   bottom: 5%; /* 5% from the top of the screen */
