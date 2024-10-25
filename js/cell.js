@@ -1,4 +1,5 @@
 import { Member } from './member.js';
+//TODO: Make logic for max height and width, family tree logic (placement)
 
 export class Cell {
   constructor(Member) {
@@ -16,56 +17,74 @@ export class Cell {
     });
   }
 
-  draw(canvasW, canvasH) {
+  static TEXT_MAX_SIZE_X;
+  static TEXT_MAX_SIZE_Y;
+  static CANVAS;
+
+  setCanvas(canvas) {
+    this.CANVAS = canvas;
+    this.TEXT_MAX_SIZE_X = 300;
+    this.TEXT_MAX_SIZE_Y = 35;
+  }
+
+  draw() {
+    let canvasW = this.CANVAS.width;
+    let canvasH = this.CANVAS.height;
     this.text = new PIXI.Text({
       text: this.member.getFullName(),
       style: this.style,
     });
 
+    //  console.log(this.text.width); //265 for my name suggested max size of 300
     let cellTopLine = new PIXI.Graphics();
     this.cellContainer.addChild(cellTopLine);
     let cellBotLine = new PIXI.Graphics();
     this.cellContainer.addChild(cellBotLine);
+    //Potentionally temporary left and right line
+    let cellLeftLine = new PIXI.Graphics();
+    this.cellContainer.addChild(cellLeftLine);
+    let cellRightLine = new PIXI.Graphics();
+    this.cellContainer.addChild(cellRightLine);
     this.cellContainer.addChild(this.text);
 
+    //console.log(this.text.height);
+
     cellTopLine.moveTo(
-      canvasW / 2 +
-        getStringWidth(
-          this.member.getFullName(),
-          this.style.fontSize * 0.1 + 'px ' + this.style.fontFamily
-        ),
+      canvasW / 2 + this.TEXT_MAX_SIZE_X * 0.1,
       canvasH / 2 - 3
+    );
+    cellLeftLine.moveTo(canvasW / 2, canvasH / 2 + this.TEXT_MAX_SIZE_Y * 0.1);
+    cellRightLine.moveTo(
+      canvasW / 2 + this.TEXT_MAX_SIZE_X,
+      canvasH / 2 + this.TEXT_MAX_SIZE_Y * 0.1
     );
 
     cellTopLine.lineTo(
-      canvasW / 2 +
-        getStringWidth(
-          this.member.getFullName(),
-          this.style.fontSize * 0.9 + 'px ' + this.style.fontFamily
-        ),
+      canvasW / 2 + this.TEXT_MAX_SIZE_X * 0.9,
       canvasH / 2 - 3
+    );
+    cellLeftLine.lineTo(canvasW / 2, canvasH / 2 + this.TEXT_MAX_SIZE_Y * 0.9);
+    cellRightLine.lineTo(
+      canvasW / 2 + this.TEXT_MAX_SIZE_X,
+      canvasH / 2 + this.TEXT_MAX_SIZE_Y * 0.9
     );
 
     cellBotLine.moveTo(
-      canvasW / 2 +
-        getStringWidth(
-          this.member.getFullName(),
-          this.style.fontSize * 0.1 + 'px ' + this.style.fontFamily
-        ),
-      canvasH / 2 + this.style.fontSize + 7
+      canvasW / 2 + this.TEXT_MAX_SIZE_X * 0.1,
+      canvasH / 2 + this.TEXT_MAX_SIZE_Y
     );
 
     cellBotLine.lineTo(
-      canvasW / 2 +
-        getStringWidth(
-          this.member.getFullName(),
-          this.style.fontSize * 0.9 + 'px ' + this.style.fontFamily
-        ),
-      canvasH / 2 + this.style.fontSize + 7
+      canvasW / 2 + this.TEXT_MAX_SIZE_X * 0.9,
+      canvasH / 2 + this.TEXT_MAX_SIZE_Y
     );
     cellTopLine.stroke({ width: 1, color: 0xffffff });
     cellBotLine.stroke({ width: 1, color: 0xffffff });
-    this.text.x = canvasW / 2;
+    cellLeftLine.stroke({ width: 1, color: 0xffffff });
+    cellRightLine.stroke({ width: 1, color: 0xffffff });
+
+    //move text to center
+    this.text.x = canvasW / 2 + this.TEXT_MAX_SIZE_X / 2 - this.text.width / 2;
     this.text.y = canvasH / 2;
   }
 

@@ -11,18 +11,19 @@ window.onload = async () => {
   await PIXI.Assets.load('Media/sample.png');
   let sprite = PIXI.Sprite.from('Media/sample.png');
 
-  const style = new PIXI.TextStyle({
-    fill: '#e0e0e0',
-    fontFamily: 'Georgia',
-    fontSize: 28,
-    align: 'center',
-  });
-  let self = new Member({
-    firstName: 'Theodore',
-    lastName: 'Conyers Jr',
-    age: 28,
-  });
-  let rootFamilyMember = new Cell(self);
+  // const style = new PIXI.TextStyle({
+  //   fill: '#e0e0e0',
+  //   fontFamily: 'Georgia',
+  //   fontSize: 28,
+  //   align: 'center',
+  // });
+  // let self = new Member({
+  //   firstName: 'Theodore',
+  //   lastName: 'Conyers Jr',
+  //   age: 28,
+  // });
+  let self;
+  let rootFamilyMember;
 
   //console.log(self);
   //const cellContainer = new PIXI.Container();
@@ -34,6 +35,13 @@ window.onload = async () => {
         (memberData) => new Member(memberData)
       );
       console.log(familyMembers);
+
+      self = familyMembers[0];
+      rootFamilyMember = new Cell(self);
+
+      rootFamilyMember.setCanvas(app.canvas);
+      rootFamilyMember.draw();
+      app.stage.addChild(rootFamilyMember.cellContainer);
     })
     .catch((error) => console.error('Error loading family data:', error));
 
@@ -80,9 +88,6 @@ window.onload = async () => {
   cellContainer.addChild(cellTopLine);*/
   //text.x = app.canvas.width / 2;
   //text.y = app.canvas.height / 2;
-
-  rootFamilyMember.draw(app.canvas.width, app.canvas.height);
-  app.stage.addChild(rootFamilyMember.cellContainer);
 
   let borderTop = new PIXI.Graphics();
   let borderBottom = new PIXI.Graphics();
