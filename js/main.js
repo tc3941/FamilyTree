@@ -25,8 +25,13 @@ window.onload = async () => {
   let self;
   let rootFamilyMember;
 
+  const verticalGap = Cell.TEXT_MAX_SIZE_Y * 1.5;
+  const horizontalGap = Cell.TEXT_MAX_SIZE_X * 0.333;
   //console.log(self);
   //const cellContainer = new PIXI.Container();
+
+  //Start with the first one then find the parent based on the child's id
+  //print Start > print their children in the 'next generation' > then print their children etc. until u cant then do the next and continue
 
   fetch('family.json')
     .then((response) => response.json())
@@ -34,13 +39,47 @@ window.onload = async () => {
       const familyMembers = familyData.family.map(
         (memberData) => new Member(memberData)
       );
-      console.log(familyMembers);
+      //console.log(familyMembers);
 
       self = familyMembers[0];
       rootFamilyMember = new Cell(self);
 
       rootFamilyMember.setCanvas(app.canvas);
-      rootFamilyMember.draw();
+      rootFamilyMember.draw(app.canvas.width, app.canvas.height);
+
+      let newMember;
+      let currentX = app.canvas.width;
+      let currentY = app.canvas.height;
+      //set parents
+      for (let i = 0; i <= familyMembers.length - 1; i++) {
+        if (familyMembers[i].children.length != 0) {
+          for (let j = 0; j <= familyMembers[i].children.length - 1; j++) {
+            //for every child
+            let child = familyMembers[i].children[j]; //set child
+            //console.log(familyMembers.find((person) => person.id === child.id));
+            if (child.id != null) {
+              //if child has an id
+              let trueSelf = familyMembers.find(
+                (person) => person.id === child.id //the the person with the id
+              );
+              if (trueSelf != null) {
+                console.log(parent);
+                trueSelf.parentA == -1
+                  ? (trueSelf.parentA = familyMembers[i].id)
+                  : (trueSelf.parentB = familyMembers[i].id);
+              } else {
+                child.parentA == -1
+                  ? (child.parentA = familyMembers[i].id)
+                  : (child.parentB = familyMembers[i].id);
+              }
+            }
+          }
+          //newMember.setCanvas(app.canvas);
+          //newMember.draw;
+        }
+      }
+
+      console.log(familyMembers);
       app.stage.addChild(rootFamilyMember.cellContainer);
     })
     .catch((error) => console.error('Error loading family data:', error));

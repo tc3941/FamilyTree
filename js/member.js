@@ -9,6 +9,8 @@ export class Member {
     generation = 0,
     children = [],
     id = 0,
+    parentA = -1,
+    parentB = -2,
   }) {
     this.firstName = firstName;
     this.lastName = lastName;
@@ -18,6 +20,9 @@ export class Member {
     this.father = father;
     this.generation = generation;
     this.children = children.map((child) => new Member(child)); // Recursively create Member instances for children
+    this.parentA = parentA;
+    this.parentB = parentB;
+    this.id = id;
   }
 
   families = [];

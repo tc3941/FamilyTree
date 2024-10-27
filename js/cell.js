@@ -27,9 +27,9 @@ export class Cell {
     this.TEXT_MAX_SIZE_Y = 35;
   }
 
-  draw() {
-    let canvasW = this.CANVAS.width;
-    let canvasH = this.CANVAS.height;
+  draw(canvasW, canvasH) {
+    //canvasW = this.CANVAS.width; //x
+    //canvasH = this.CANVAS.height; //y
     this.text = new PIXI.Text({
       text: this.member.getFullName(),
       style: this.style,

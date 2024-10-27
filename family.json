@@ -26,7 +26,17 @@
       "suffix": "",
       "generation": 99,
       "id": 3,
-      "children": []
+      "children": [
+        {
+          "firstName": "Theodore",
+          "lastName": "Conyers",
+          "age": 28,
+          "suffix": "Jr.",
+          "generation": 100,
+          "children": [],
+          "id": 1
+        }
+      ]
     },
     {
       "firstName": "Latise",
