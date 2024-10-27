@@ -15,6 +15,10 @@ export class Cell {
       text: this.member.getFullName(),
       style: this.style,
     });
+    this.x;
+    this.y;
+    this.positionSet = false;
+    this.id = this.member.id;
   }
 
   static TEXT_MAX_SIZE_X;
@@ -27,7 +31,7 @@ export class Cell {
     this.TEXT_MAX_SIZE_Y = 35;
   }
 
-  draw(canvasW, canvasH) {
+  draw(canvasW = this.x, canvasH = this.y) {
     //canvasW = this.CANVAS.width; //x
     //canvasH = this.CANVAS.height; //y
     this.text = new PIXI.Text({
@@ -49,34 +53,28 @@ export class Cell {
 
     //console.log(this.text.height);
 
-    cellTopLine.moveTo(
-      canvasW / 2 + this.TEXT_MAX_SIZE_X * 0.1,
-      canvasH / 2 - 3
-    );
-    cellLeftLine.moveTo(canvasW / 2, canvasH / 2 + this.TEXT_MAX_SIZE_Y * 0.1);
+    cellTopLine.moveTo(canvasW + this.TEXT_MAX_SIZE_X * 0.1, canvasH - 3);
+    cellLeftLine.moveTo(canvasW, canvasH + this.TEXT_MAX_SIZE_Y * 0.1);
     cellRightLine.moveTo(
-      canvasW / 2 + this.TEXT_MAX_SIZE_X,
-      canvasH / 2 + this.TEXT_MAX_SIZE_Y * 0.1
+      canvasW + this.TEXT_MAX_SIZE_X,
+      canvasH + this.TEXT_MAX_SIZE_Y * 0.1
     );
 
-    cellTopLine.lineTo(
-      canvasW / 2 + this.TEXT_MAX_SIZE_X * 0.9,
-      canvasH / 2 - 3
-    );
-    cellLeftLine.lineTo(canvasW / 2, canvasH / 2 + this.TEXT_MAX_SIZE_Y * 0.9);
+    cellTopLine.lineTo(canvasW + this.TEXT_MAX_SIZE_X * 0.9, canvasH - 3);
+    cellLeftLine.lineTo(canvasW, canvasH + this.TEXT_MAX_SIZE_Y * 0.9);
     cellRightLine.lineTo(
-      canvasW / 2 + this.TEXT_MAX_SIZE_X,
-      canvasH / 2 + this.TEXT_MAX_SIZE_Y * 0.9
+      canvasW + this.TEXT_MAX_SIZE_X,
+      canvasH + this.TEXT_MAX_SIZE_Y * 0.9
     );
 
     cellBotLine.moveTo(
-      canvasW / 2 + this.TEXT_MAX_SIZE_X * 0.1,
-      canvasH / 2 + this.TEXT_MAX_SIZE_Y
+      canvasW + this.TEXT_MAX_SIZE_X * 0.1,
+      canvasH + this.TEXT_MAX_SIZE_Y
     );
 
     cellBotLine.lineTo(
-      canvasW / 2 + this.TEXT_MAX_SIZE_X * 0.9,
-      canvasH / 2 + this.TEXT_MAX_SIZE_Y
+      canvasW + this.TEXT_MAX_SIZE_X * 0.9,
+      canvasH + this.TEXT_MAX_SIZE_Y
     );
     cellTopLine.stroke({ width: 1, color: 0xffffff });
     cellBotLine.stroke({ width: 1, color: 0xffffff });
@@ -84,8 +82,8 @@ export class Cell {
     cellRightLine.stroke({ width: 1, color: 0xffffff });
 
     //move text to center
-    this.text.x = canvasW / 2 + this.TEXT_MAX_SIZE_X / 2 - this.text.width / 2;
-    this.text.y = canvasH / 2;
+    this.text.x = canvasW + this.TEXT_MAX_SIZE_X / 2 - this.text.width / 2;
+    this.text.y = canvasH;
   }
 
   getName() {

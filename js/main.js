@@ -1,6 +1,7 @@
 import { Cell } from './cell.js';
 import { Member } from './member.js';
-
+let familyMembers;
+let familyCells = [];
 window.onload = async () => {
   //const { Graphics } = require('pixi.js');
   const graphics = new PIXI.Graphics();
@@ -36,7 +37,7 @@ window.onload = async () => {
   fetch('family.json')
     .then((response) => response.json())
     .then((familyData) => {
-      const familyMembers = familyData.family.map(
+      familyMembers = familyData.family.map(
         (memberData) => new Member(memberData)
       );
       //console.log(familyMembers);
@@ -45,11 +46,10 @@ window.onload = async () => {
       rootFamilyMember = new Cell(self);
 
       rootFamilyMember.setCanvas(app.canvas);
-      rootFamilyMember.draw(app.canvas.width, app.canvas.height);
+      rootFamilyMember.draw(app.canvas.width / 2, app.canvas.height / 2);
 
       let newMember;
-      let currentX = app.canvas.width;
-      let currentY = app.canvas.height;
+
       //set parents
       for (let i = 0; i <= familyMembers.length - 1; i++) {
         if (familyMembers[i].children.length != 0) {
@@ -63,7 +63,7 @@ window.onload = async () => {
                 (person) => person.id === child.id //the the person with the id
               );
               if (trueSelf != null) {
-                console.log(parent);
+                //console.log(parent);
                 trueSelf.parentA == -1
                   ? (trueSelf.parentA = familyMembers[i].id)
                   : (trueSelf.parentB = familyMembers[i].id);
@@ -78,8 +78,21 @@ window.onload = async () => {
           //newMember.draw;
         }
       }
+      setUniqueCells(familyMembers);
+      //print self(first one in center) their children their children etc. then parentA (left) then their children
+      /*
+      for (let i = 0; i <= familyMembers.length - 1; i++) {
+        let currentMember = familyMembers[i];
+        let currentCell = new Cell(currentMember);
+        currentCell.x = currentX;
+        currentCell.y = currentY;
+        if (familyMembers[i].children.length >0) {
+          
+        }
+      }*/
 
       console.log(familyMembers);
+      console.log(familyCells);
       app.stage.addChild(rootFamilyMember.cellContainer);
     })
     .catch((error) => console.error('Error loading family data:', error));
@@ -240,3 +253,26 @@ window.onload = async () => {
     window.scrollTo(scrollLeft - xDiff, scrollTop - yDiff);
   });
 };
+
+function setUniqueCells(familyMembers_) {
+  //console.log('Ding: ' + familyMembers_[0].firstName);
+  for (let i = 0; i <= familyMembers_.length - 1; i++) {
+    //go thru all of the members
+    let currentMember = familyMembers_[i];
+    let trueMember = familyMembers.find(
+      (person) => person.id === currentMember.id //find the person with the id
+    );
+    if (trueMember == null) {
+      //if that person doesnt have a 'true self'
+      trueMember = currentMember;
+    }
+    if (!familyCells.find((cell) => cell.member.id === trueMember.id)) {
+      //throw the person into the cell array and set positon
+      let currentCell = new Cell(trueMember);
+      familyCells.push(currentCell);
+    }
+    if (familyMembers_[i].children.length > 0) {
+      setUniqueCells(familyMembers_[i].children);
+    }
+  }
+}
