@@ -2,6 +2,9 @@ import { Cell } from './cell.js';
 import { Member } from './member.js';
 let familyMembers;
 let familyCells = [];
+let verticalGap = Cell.TEXT_MAX_SIZE_Y * 5;
+let horizontalGap = Cell.TEXT_MAX_SIZE_X * 0.333;
+
 window.onload = async () => {
   //const { Graphics } = require('pixi.js');
   const graphics = new PIXI.Graphics();
@@ -26,8 +29,6 @@ window.onload = async () => {
   let self;
   let rootFamilyMember;
 
-  const verticalGap = Cell.TEXT_MAX_SIZE_Y * 1.5;
-  const horizontalGap = Cell.TEXT_MAX_SIZE_X * 0.333;
   //console.log(self);
   //const cellContainer = new PIXI.Container();
 
@@ -79,7 +80,35 @@ window.onload = async () => {
         }
       }
       setUniqueCells(familyMembers);
+      //console.log(verticalGap);
+      let startingID = 1;
+      let startingIDCell = familyCells.find((cell) => cell.id === startingID);
+      let tempParentA = familyCells.find(
+        (cell) => cell.id === startingIDCell.member.parentA
+      );
+      let tempParentB = familyCells.find(
+        (cell) => cell.id === startingIDCell.member.parentB
+      );
+      let tempChild;
+      if (tempParentA) {
+        tempChild = tempParentA.member.children.find(
+          (cell) => cell.id === startingID
+        );
+        const index = tempParentA.member.children.indexOf(tempChild);
+        const x = tempParentA.member.children.splice(index, 1);
+      }
+      if (tempParentB) {
+        tempChild = tempParentB.member.children.find(
+          (cell) => cell.id === startingID
+        );
+        const index = tempParentB.member.children.indexOf(tempChild);
+        const x = tempParentB.member.children.splice(index, 1);
+      }
+
+      startDraw(app, startingID, app.canvas.width / 2, app.canvas.height / 2);
       //print self(first one in center) their children their children etc. then parentA (left) then their children
+      //problem cases: one parent, children from first parent should be next to each other
+      // if not null (-1), remember what cell u comefrom
       /*
       for (let i = 0; i <= familyMembers.length - 1; i++) {
         let currentMember = familyMembers[i];
@@ -93,7 +122,10 @@ window.onload = async () => {
 
       console.log(familyMembers);
       console.log(familyCells);
-      app.stage.addChild(rootFamilyMember.cellContainer);
+
+      tempParentA.member.children.push(tempChild);
+      tempParentB.member.children.push(tempChild);
+      //app.stage.addChild(rootFamilyMember.cellContainer);
     })
     .catch((error) => console.error('Error loading family data:', error));
 
@@ -253,6 +285,107 @@ window.onload = async () => {
     window.scrollTo(scrollLeft - xDiff, scrollTop - yDiff);
   });
 };
+
+//First in json first one we start with
+function startDraw(app_, id_, x, y, parentCell = '') {
+  let cell_ = familyCells.find((cell) => cell.member.id === id_);
+  console.log(
+    cell_.member.firstName +
+      ' ' +
+      cell_.member.lastName +
+      ' ' +
+      cell_.member.suffix +
+      ': positionSet? ' +
+      cell_.positionSet +
+      ', x: ' +
+      x +
+      ', ' +
+      'y:' +
+      y
+  );
+  if (!cell_.positionSet) {
+    cell_.setCanvas(app_.canvas);
+    cell_.draw(x, y);
+    cell_.positionSet = true;
+    // console.log('drawing');
+    // console.log(cell_);
+    // console.log('stage: ');
+    // console.log(app_.stage);
+    app_.stage.addChild(cell_.cellContainer);
+    //cell > child >child if possible
+    if (cell_.member.children.length > 0) {
+      //might need to make an array that consists of all the children except the one you came from
+      for (let i = 0; i <= cell_.member.children.length - 1; i++) {
+        const drawn =
+          familyCells.find(
+            (cell) => cell.member.id === cell_.member.children[i].id
+          ).positionSet == true;
+        if (!drawn) {
+          if (parentCell.id === cell_.member.children[i].parentB) {
+            //if parentB's kid print to the right else left
+            startDraw(
+              app_,
+              cell_.member.children[i].id,
+              x -
+                Cell.TEXT_MAX_SIZE_X / 2 +
+                i * (horizontalGap + Cell.TEXT_MAX_SIZE_X),
+              y + verticalGap,
+              cell_
+            );
+          } else {
+            startDraw(
+              app_,
+              cell_.member.children[i].id,
+              x +
+                horizontalGap * 0.5 +
+                Cell.TEXT_MAX_SIZE_X / 2 -
+                (cell_.member.children.length - i) *
+                  (horizontalGap + Cell.TEXT_MAX_SIZE_X),
+              y + verticalGap,
+              cell_
+            );
+          }
+        }
+      }
+    }
+    //find parents
+    const parentA = familyCells.find(
+      (cell) => cell.id === cell_.member.parentA
+    );
+    const parentB = familyCells.find(
+      (cell) => cell.id === cell_.member.parentB
+    );
+    if (cell_.member.parentA !== -1 && parentA != null) {
+      console.log(
+        'ParentA: ' + (cell_.member.parentA !== -1) + ' and ' + parentA
+      );
+
+      //check that cells member and see if parent exists
+      //if parentA (should be mom) print top left else top right
+      startDraw(
+        app_,
+        cell_.member.parentA,
+        x +
+          Cell.TEXT_MAX_SIZE_X / 2 -
+          (horizontalGap / 2 + Cell.TEXT_MAX_SIZE_X),
+        y - verticalGap
+      );
+    }
+    if (cell_.member.parentB !== -1 && parentB != null) {
+      console.log(
+        'ParentB: ' + (cell_.member.parentB !== -1) + ' and ' + parentB
+      );
+      startDraw(
+        app_,
+        cell_.member.parentB,
+        x -
+          Cell.TEXT_MAX_SIZE_X / 2 +
+          (horizontalGap / 2 + Cell.TEXT_MAX_SIZE_X),
+        y - verticalGap
+      );
+    }
+  }
+}
 
 function setUniqueCells(familyMembers_) {
   //console.log('Ding: ' + familyMembers_[0].firstName);

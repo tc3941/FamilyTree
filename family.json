@@ -20,25 +20,6 @@
       ]
     },
     {
-      "firstName": "Theodore",
-      "lastName": "Conyers",
-      "age": 48,
-      "suffix": "",
-      "generation": 99,
-      "id": 3,
-      "children": [
-        {
-          "firstName": "Theodore",
-          "lastName": "Conyers",
-          "age": 28,
-          "suffix": "Jr.",
-          "generation": 100,
-          "children": [],
-          "id": 1
-        }
-      ]
-    },
-    {
       "firstName": "Latise",
       "lastName": "Roper",
       "age": 46,
@@ -72,6 +53,25 @@
           "generation": 100,
           "children": [],
           "id": 5
+        }
+      ]
+    },
+    {
+      "firstName": "Theodore",
+      "lastName": "Conyers",
+      "age": 48,
+      "suffix": "",
+      "generation": 99,
+      "id": 3,
+      "children": [
+        {
+          "firstName": "Theodore",
+          "lastName": "Conyers",
+          "age": 28,
+          "suffix": "Jr.",
+          "generation": 100,
+          "children": [],
+          "id": 1
         }
       ]
     }

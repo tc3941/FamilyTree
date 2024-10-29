@@ -10,7 +10,7 @@ export class Member {
     children = [],
     id = 0,
     parentA = -1,
-    parentB = -2,
+    parentB = -1,
   }) {
     this.firstName = firstName;
     this.lastName = lastName;
