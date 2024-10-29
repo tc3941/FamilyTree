@@ -212,7 +212,7 @@ window.onload = async () => {
   borderRight.stroke({ width: 1, color: 0xffffff });
 
   // Add the borderTop to the stage
-  app.stage.addChild(sprite);
+  //app.stage.addChild(sprite);
 
   // Add a variable to count up the seconds our demo has been running
   let elapsed = 0.0;
