@@ -4,6 +4,7 @@ import { Member } from './member.js';
 export class Cell {
   constructor(Member) {
     this.member = Member;
+    this.name = this.member.getFullName();
     this.cellContainer = new PIXI.Container();
     this.style = new PIXI.TextStyle({
       fill: '#e0e0e0',

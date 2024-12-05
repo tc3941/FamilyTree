@@ -61,7 +61,7 @@ window.onload = async () => {
             if (child.id != null) {
               //if child has an id
               let trueSelf = familyMembers.find(
-                (person) => person.id === child.id //the the person with the id
+                (person) => person.id === child.id //find the person with the id
               );
               if (trueSelf != null) {
                 //console.log(parent);
@@ -79,16 +79,54 @@ window.onload = async () => {
           //newMember.draw;
         }
       }
+
+      //Create unique cells for each family member
       setUniqueCells(familyMembers);
       //console.log(verticalGap);
+
+      //Start drawing the family tree from a specific member
       let startingID = 1;
+
       let startingIDCell = familyCells.find((cell) => cell.id === startingID);
+
       let tempParentA = familyCells.find(
         (cell) => cell.id === startingIDCell.member.parentA
       );
       let tempParentB = familyCells.find(
         (cell) => cell.id === startingIDCell.member.parentB
       );
+
+      //#region Get siblings
+      let siblingsList = [];
+
+      if (tempParentA) {
+        for (const element of tempParentA.member.children) {
+          siblingsList.push(element.id);
+        }
+      }
+      if (tempParentB) {
+        for (const element of tempParentB.member.children) {
+          siblingsList.push(element.id);
+        }
+      }
+      //Get starting ID's siblings to make family cells
+      //Check each parent of the startingID and get their children
+
+      //Set siblings by id first and prevent duplicates replace IDs with member object instead
+
+      siblingsList = [...new Set(siblingsList)];
+      let siblingsMemList = [];
+      for (const sibling of siblingsList) {
+        siblingsMemList.push(
+          familyCells.find(
+            (person) => person.id === sibling //find the person with the id
+          )
+        );
+      }
+      console.log('siblingsList');
+      console.log(siblingsMemList);
+      //#endregion
+
       let tempChild;
       if (tempParentA) {
         tempChild = tempParentA.member.children.find(
@@ -120,7 +158,9 @@ window.onload = async () => {
         }
       }*/
 
+      console.log('familyMembers');
       console.log(familyMembers);
+      console.log('familyCells');
       console.log(familyCells);
 
       tempParentA.member.children.push(tempChild);
@@ -387,6 +427,7 @@ function startDraw(app_, id_, x, y, parentCell = '') {
   }
 }
 
+// Creates unique Cell objects for each Member
 function setUniqueCells(familyMembers_) {
   //console.log('Ding: ' + familyMembers_[0].firstName);
   for (let i = 0; i <= familyMembers_.length - 1; i++) {
