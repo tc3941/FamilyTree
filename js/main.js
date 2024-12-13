@@ -83,20 +83,21 @@ window.onload = async () => {
       //Create unique cells for each family member
       setUniqueCells(familyMembers);
       //console.log(verticalGap);
-
       //Start drawing the family tree from a specific member
       let startingID = 1;
-
+      
       let startingIDCell = familyCells.find((cell) => cell.id === startingID);
-
+      
       let tempParentA = familyCells.find(
         (cell) => cell.id === startingIDCell.member.parentA
       );
       let tempParentB = familyCells.find(
         (cell) => cell.id === startingIDCell.member.parentB
       );
-
+      
+      getSiblings(startingID);
       //#region Get siblings
+/*
       let siblingsList = [];
 
       if (tempParentA) {
@@ -125,6 +126,12 @@ window.onload = async () => {
       }
       console.log('siblingsList');
       console.log(siblingsMemList);
+      */
+      //#endregion
+      
+      //region Get Parents Siblings
+
+
       //#endregion
 
       let tempChild;
@@ -449,4 +456,46 @@ function setUniqueCells(familyMembers_) {
       setUniqueCells(familyMembers_[i].children);
     }
   }
+}
+
+function getSiblings(id_){
+
+  let startingIDCell = familyCells.find((cell) => cell.id === id_);
+
+      let tempParentA = familyCells.find(
+        (cell) => cell.id === startingIDCell.member.parentA
+      );
+      let tempParentB = familyCells.find(
+        (cell) => cell.id === startingIDCell.member.parentB
+      );
+
+  let siblingsList = [];
+
+  if (tempParentA) {
+    for (const element of tempParentA.member.children) {
+      siblingsList.push(element.id);
+    }
+  }
+  if (tempParentB) {
+    for (const element of tempParentB.member.children) {
+      siblingsList.push(element.id);
+    }
+  }
+  //Get starting ID's siblings to make family cells
+  //Check each parent of the startingID and get their children
+
+  //Set siblings by id first and prevent duplicates replace IDs with member object instead
+
+  siblingsList = [...new Set(siblingsList)];
+  let siblingsMemList = [];
+  for (const sibling of siblingsList) {
+    siblingsMemList.push(
+      familyCells.find(
+        (person) => person.id === sibling //find the person with the id
+      )
+    );
+  }
+  console.log('siblingsList');
+  console.log(siblingsMemList);
+  return siblingsMemList;
 }
