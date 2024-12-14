@@ -495,7 +495,16 @@ function getSiblings(id_){
       )
     );
   }
-  console.log('siblingsList');
+
+  if(siblingsList.find((self) => self === id_))
+  siblingsList.splice(siblingsList.findIndex((self) => self === id_),1);
+
+  console.log('siblingsMemList');
   console.log(siblingsMemList);
+  startingIDCell.member.siblings.push(siblingsList);
+  console.log('siblingsList');
+  console.log(siblingsList);
+  console.log(startingIDCell.member);
+
   return siblingsMemList;
 }
