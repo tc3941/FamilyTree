@@ -1,5 +1,7 @@
 import { Cell } from './cell.js';
 import { Member } from './member.js';
+import { FamilyCell } from './family.js';
+
 let familyMembers;
 let familyCells = [];
 let verticalGap = Cell.TEXT_MAX_SIZE_Y * 5;
@@ -51,6 +53,7 @@ window.onload = async () => {
 
       let newMember;
 
+      setUniqueCells(familyMembers);
       //set parents
       for (let i = 0; i <= familyMembers.length - 1; i++) {
         if (familyMembers[i].children.length != 0) {
@@ -64,14 +67,15 @@ window.onload = async () => {
                 (person) => person.id === child.id //find the person with the id
               );
               if (trueSelf != null) {
-                //console.log(parent);
-                trueSelf.parentA == -1
+                trueSelf.parentA === -1
                   ? (trueSelf.parentA = familyMembers[i].id)
                   : (trueSelf.parentB = familyMembers[i].id);
               } else {
-                child.parentA == -1
-                  ? (child.parentA = familyMembers[i].id)
-                  : (child.parentB = familyMembers[i].id);
+                //Remember when setting values on the member to find their true self or use family cells to actually modify their data
+                child = familyCells.find((cell) => cell.id === child.id);
+                child.member.parentA === -1
+                  ? (child.member.parentA = familyMembers[i].id)
+                  : (child.member.parentB = familyMembers[i].id);
               }
             }
           }
@@ -81,23 +85,23 @@ window.onload = async () => {
       }
 
       //Create unique cells for each family member
-      setUniqueCells(familyMembers);
       //console.log(verticalGap);
       //Start drawing the family tree from a specific member
       let startingID = 1;
-      
+
       let startingIDCell = familyCells.find((cell) => cell.id === startingID);
-      
+
       let tempParentA = familyCells.find(
         (cell) => cell.id === startingIDCell.member.parentA
       );
       let tempParentB = familyCells.find(
         (cell) => cell.id === startingIDCell.member.parentB
       );
-      
-      getSiblings(startingID);
+
+      //startingIDCell.member.siblings = getSiblings(startingID);
+      getOlderGeneration(startingID);
       //#region Get siblings
-/*
+      /*
       let siblingsList = [];
 
       if (tempParentA) {
@@ -128,14 +132,14 @@ window.onload = async () => {
       console.log(siblingsMemList);
       */
       //#endregion
-      
-      //region Get Parents Siblings
 
+      //region Get Parents Siblings
 
       //#endregion
 
       let tempChild;
       if (tempParentA) {
+        tempParentA.member.siblings = getSiblings(tempParentA.member.id);
         tempChild = tempParentA.member.children.find(
           (cell) => cell.id === startingID
         );
@@ -143,6 +147,7 @@ window.onload = async () => {
         const x = tempParentA.member.children.splice(index, 1);
       }
       if (tempParentB) {
+        tempParentB.member.siblings = getSiblings(tempParentB.member.id);
         tempChild = tempParentB.member.children.find(
           (cell) => cell.id === startingID
         );
@@ -336,20 +341,20 @@ window.onload = async () => {
 //First in json first one we start with
 function startDraw(app_, id_, x, y, parentCell = '') {
   let cell_ = familyCells.find((cell) => cell.member.id === id_);
-  console.log(
-    cell_.member.firstName +
-      ' ' +
-      cell_.member.lastName +
-      ' ' +
-      cell_.member.suffix +
-      ': positionSet? ' +
-      cell_.positionSet +
-      ', x: ' +
-      x +
-      ', ' +
-      'y:' +
-      y
-  );
+  // console.log(
+  //   cell_.member.firstName +
+  //     ' ' +
+  //     cell_.member.lastName +
+  //     ' ' +
+  //     cell_.member.suffix +
+  //     ': positionSet? ' +
+  //     cell_.positionSet +
+  //     ', x: ' +
+  //     x +
+  //     ', ' +
+  //     'y:' +
+  //     y
+  // );
   if (!cell_.positionSet) {
     cell_.setCanvas(app_.canvas);
     cell_.draw(x, y);
@@ -403,9 +408,9 @@ function startDraw(app_, id_, x, y, parentCell = '') {
       (cell) => cell.id === cell_.member.parentB
     );
     if (cell_.member.parentA !== -1 && parentA != null) {
-      console.log(
-        'ParentA: ' + (cell_.member.parentA !== -1) + ' and ' + parentA
-      );
+      // console.log(
+      //   'ParentA: ' + (cell_.member.parentA !== -1) + ' and ' + parentA
+      // );
 
       //check that cells member and see if parent exists
       //if parentA (should be mom) print top left else top right
@@ -419,9 +424,9 @@ function startDraw(app_, id_, x, y, parentCell = '') {
       );
     }
     if (cell_.member.parentB !== -1 && parentB != null) {
-      console.log(
-        'ParentB: ' + (cell_.member.parentB !== -1) + ' and ' + parentB
-      );
+      // console.log(
+      //   'ParentB: ' + (cell_.member.parentB !== -1) + ' and ' + parentB
+      // );
       startDraw(
         app_,
         cell_.member.parentB,
@@ -457,17 +462,33 @@ function setUniqueCells(familyMembers_) {
     }
   }
 }
+function getOlderGeneration(id_) {
+  let startingIDCell = familyCells.find((cell) => cell.id === id_); //Get starter ID
+  //Get their parents
+  let tempParentA = familyCells.find(
+    (cell) => cell.id === startingIDCell.member.parentA
+  );
+  let tempParentB = familyCells.find(
+    (cell) => cell.id === startingIDCell.member.parentB
+  );
+  //Set the starter id's siblings
+  startingIDCell.member.siblings = getSiblings(id_);
 
-function getSiblings(id_){
+  //recursively check their parents
+  if (tempParentA) return getOlderGeneration(tempParentA.member.id);
 
+  if (tempParentB) return getOlderGeneration(tempParentA.member.id);
+}
+
+function getSiblings(id_) {
   let startingIDCell = familyCells.find((cell) => cell.id === id_);
 
-      let tempParentA = familyCells.find(
-        (cell) => cell.id === startingIDCell.member.parentA
-      );
-      let tempParentB = familyCells.find(
-        (cell) => cell.id === startingIDCell.member.parentB
-      );
+  let tempParentA = familyCells.find(
+    (cell) => cell.id === startingIDCell.member.parentA
+  );
+  let tempParentB = familyCells.find(
+    (cell) => cell.id === startingIDCell.member.parentB
+  );
 
   let siblingsList = [];
 
@@ -488,6 +509,12 @@ function getSiblings(id_){
 
   siblingsList = [...new Set(siblingsList)];
   let siblingsMemList = [];
+  if (siblingsList.find((self) => self === id_))
+    siblingsList.splice(
+      siblingsList.findIndex((self) => self === id_),
+      1
+    );
+
   for (const sibling of siblingsList) {
     siblingsMemList.push(
       familyCells.find(
@@ -495,9 +522,6 @@ function getSiblings(id_){
       )
     );
   }
-
-  if(siblingsList.find((self) => self === id_))
-  siblingsList.splice(siblingsList.findIndex((self) => self === id_),1);
 
   console.log('siblingsMemList');
   console.log(siblingsMemList);

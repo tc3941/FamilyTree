@@ -2,6 +2,7 @@ export class Member {
   constructor({
     firstName,
     lastName,
+    id = 0,
     age,
     suffix = '',
     mother = '',
@@ -9,12 +10,12 @@ export class Member {
     generation = 0,
     children = [],
     siblings = [],
-    id = 0,
     parentA = -1,
     parentB = -1,
   }) {
     this.firstName = firstName;
     this.lastName = lastName;
+    this.id = id;
     this.age = age;
     this.suffix = suffix;
     this.mother = mother;
@@ -24,7 +25,6 @@ export class Member {
     this.siblings = siblings;
     this.parentA = parentA;
     this.parentB = parentB;
-    this.id = id;
   }
 
   families = [];

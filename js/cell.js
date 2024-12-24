@@ -5,6 +5,7 @@ export class Cell {
   constructor(Member) {
     this.member = Member;
     this.name = this.member.getFullName();
+    this.id = this.member.id;
     this.cellContainer = new PIXI.Container();
     this.style = new PIXI.TextStyle({
       fill: '#e0e0e0',
@@ -19,7 +20,6 @@ export class Cell {
     this.x;
     this.y;
     this.positionSet = false;
-    this.id = this.member.id;
   }
 
   static TEXT_MAX_SIZE_X = 300;
@@ -33,7 +33,7 @@ export class Cell {
   draw(canvasW = this.x, canvasH = this.y) {
     //canvasW = this.CANVAS.width; //x
     //canvasH = this.CANVAS.height; //y
-    console.log('x: ' + canvasW + ' y: ' + canvasH);
+    //console.log('x: ' + canvasW + ' y: ' + canvasH);
     this.text = new PIXI.Text({
       text: this.member.getFullName(),
       style: this.style,
