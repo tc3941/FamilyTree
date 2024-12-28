@@ -20,6 +20,7 @@ export class Cell {
     this.x;
     this.y;
     this.positionSet = false;
+    this.bloodRelated = false;
   }
 
   static TEXT_MAX_SIZE_X = 300;

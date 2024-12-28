@@ -27,7 +27,7 @@ export class Member {
     this.parentB = parentB;
   }
 
-  families = [];
+  //families = [];
 
   getFullName() {
     return `${this.firstName} ${this.lastName} ${this.suffix}`;

@@ -462,8 +462,21 @@ function setUniqueCells(familyMembers_) {
     }
   }
 }
+
+function getYoungerGeneration(id_) {
+  let startingIDCell = familyCells.find((cell) => cell.id === id_); //Get starter ID
+
+  for (let i = 0; i <= startingIDCell.member.siblings.length - 1; i++) {
+    startingIDCell.member.siblings[i].bloodRelated = true;
+  }
+}
+
+function markRelatedChildren() {}
+
 function getOlderGeneration(id_) {
   let startingIDCell = familyCells.find((cell) => cell.id === id_); //Get starter ID
+  startingIDCell.bloodRelated = true;
+
   //Get their parents
   let tempParentA = familyCells.find(
     (cell) => cell.id === startingIDCell.member.parentA
@@ -473,6 +486,11 @@ function getOlderGeneration(id_) {
   );
   //Set the starter id's siblings
   startingIDCell.member.siblings = getSiblings(id_);
+
+  //Make sure to mark them as blood related so they appear on the family tree
+  if (tempParentA) tempParentA.bloodRelated = true;
+
+  if (tempParentB) tempParentB.bloodRelated = true;
 
   //recursively check their parents
   if (tempParentA) return getOlderGeneration(tempParentA.member.id);
@@ -519,7 +537,7 @@ function getSiblings(id_) {
     siblingsMemList.push(
       familyCells.find(
         (person) => person.id === sibling //find the person with the id
-      )
+      ).member
     );
   }
 
