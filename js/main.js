@@ -100,6 +100,7 @@ window.onload = async () => {
 
       //startingIDCell.member.siblings = getSiblings(startingID);
       getOlderGeneration(startingID);
+      getYoungerGeneration(startingID);
       //#region Get siblings
       /*
       let siblingsList = [];
@@ -169,6 +170,13 @@ window.onload = async () => {
           
         }
       }*/
+
+      setPositionDraw(
+        app,
+        startingID,
+        app.canvas.width / 2,
+        app.canvas.height / 2
+      );
 
       console.log('familyMembers');
       console.log(familyMembers);
@@ -338,6 +346,10 @@ window.onload = async () => {
   });
 };
 
+function setPositionDraw(app_, id_, x, y, parentCell = '') {
+  let cell_ = familyCells.find((cell) => cell.member.id === id_);
+}
+
 //First in json first one we start with
 function startDraw(app_, id_, x, y, parentCell = '') {
   let cell_ = familyCells.find((cell) => cell.member.id === id_);
@@ -465,14 +477,37 @@ function setUniqueCells(familyMembers_) {
 
 function getYoungerGeneration(id_) {
   let startingIDCell = familyCells.find((cell) => cell.id === id_); //Get starter ID
-
-  for (let i = 0; i <= startingIDCell.member.siblings.length - 1; i++) {
-    startingIDCell.member.siblings[i].bloodRelated = true;
+  if (
+    startingIDCell.member.siblings &&
+    startingIDCell.member.siblings.length != 0
+  ) {
+    for (let i = 0; i <= startingIDCell.member.siblings.length - 1; i++) {
+      let sibling_ = familyCells.find(
+        (cell) => cell.id === startingIDCell.member.siblings[i].id
+      );
+      sibling_.bloodRelated = true;
+      markRelatedChildren(sibling_.id);
+    }
   }
 }
 
-function markRelatedChildren() {}
+function markRelatedChildren(id_) {
+  let startingIDCell = familyCells.find((cell) => cell.id === id_); //Get starter ID
 
+  if (
+    startingIDCell.member.children &&
+    startingIDCell.member.children.length != 0
+  ) {
+    for (let i = 0; i <= startingIDCell.member.children.length - 1; i++) {
+      let child_ = familyCells.find(
+        (cell) => cell.id === startingIDCell.member.children[i].id
+      );
+      child_.bloodRelated = true;
+      markRelatedChildren(child_.id);
+    }
+  }
+}
+//ur children and silbings children
 function getOlderGeneration(id_) {
   let startingIDCell = familyCells.find((cell) => cell.id === id_); //Get starter ID
   startingIDCell.bloodRelated = true;
@@ -511,11 +546,13 @@ function getSiblings(id_) {
   let siblingsList = [];
 
   if (tempParentA) {
+    getSiblings(tempParentA.id);
     for (const element of tempParentA.member.children) {
       siblingsList.push(element.id);
     }
   }
   if (tempParentB) {
+    getSiblings(tempParentB.id);
     for (const element of tempParentB.member.children) {
       siblingsList.push(element.id);
     }
@@ -534,16 +571,17 @@ function getSiblings(id_) {
     );
 
   for (const sibling of siblingsList) {
-    siblingsMemList.push(
-      familyCells.find(
-        (person) => person.id === sibling //find the person with the id
-      ).member
+    let siblingCell = familyCells.find(
+      (person) => person.id === sibling //find the person with the id
     );
+    siblingCell.bloodRelated = true;
+    markRelatedChildren(siblingCell.id);
+    siblingsMemList.push(siblingCell.member);
   }
 
   console.log('siblingsMemList');
   console.log(siblingsMemList);
-  startingIDCell.member.siblings.push(siblingsList);
+  //startingIDCell.member.siblings.push(siblingsList);
   console.log('siblingsList');
   console.log(siblingsList);
   console.log(startingIDCell.member);
