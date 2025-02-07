@@ -346,8 +346,27 @@ window.onload = async () => {
   });
 };
 
-function setPositionDraw(app_, id_, x, y, parentCell = '') {
+function setPositionDraw(
+  app_,
+  id_,
+  startX,
+  startY,
+  level = 0,
+  spacing = horizontalGap
+) {
   let cell_ = familyCells.find((cell) => cell.member.id === id_);
+
+  if (!cell_) return;
+
+  cell_.x = startX;
+  cell_.y = startY + level * spacing;
+
+  let childX = startX - ((cell_.member.children.length - 1) * spacing) / 2;
+
+  for (let child of cell_.member.children) {
+    setPositionDraw(app_, child.id, childX, startY, level + 1, spacing);
+    childX += spacing;
+  }
 }
 
 //First in json first one we start with

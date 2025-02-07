@@ -31,7 +31,7 @@ export class Cell {
     this.CANVAS = canvas;
   }
 
-  draw(canvasW = this.x, canvasH = this.y) {
+  drawOG(canvasW = this.x, canvasH = this.y) {
     //canvasW = this.CANVAS.width; //x
     //canvasH = this.CANVAS.height; //y
     //console.log('x: ' + canvasW + ' y: ' + canvasH);
@@ -88,6 +88,52 @@ export class Cell {
 
     // console.log('container: ');
     // console.log(this.cellContainer);
+  }
+
+  draw(canvasW, canvasH) {
+    this.x = canvasW; // Assign proper X position
+    this.y = canvasH; // Assign proper Y position
+
+    let padding = 50; // Space between cells
+
+    let cellTopLine = new PIXI.Graphics();
+    let cellBotLine = new PIXI.Graphics();
+    let cellLeftLine = new PIXI.Graphics();
+    let cellRightLine = new PIXI.Graphics();
+
+    this.cellContainer.addChild(
+      cellTopLine,
+      cellBotLine,
+      cellLeftLine,
+      cellRightLine,
+      this.text
+    );
+
+    // Adjust box position
+    let boxX = this.x; // + padding;
+    let boxY = this.y; // + padding;
+
+    cellTopLine.moveTo(boxX, boxY);
+    cellTopLine.lineTo(boxX + Cell.TEXT_MAX_SIZE_X, boxY);
+
+    cellLeftLine.moveTo(boxX, boxY);
+    cellLeftLine.lineTo(boxX, boxY + Cell.TEXT_MAX_SIZE_Y);
+
+    cellRightLine.moveTo(boxX + Cell.TEXT_MAX_SIZE_X, boxY);
+    cellRightLine.lineTo(
+      boxX + Cell.TEXT_MAX_SIZE_X,
+      boxY + Cell.TEXT_MAX_SIZE_Y
+    );
+
+    cellBotLine.moveTo(boxX, boxY + Cell.TEXT_MAX_SIZE_Y);
+    cellBotLine.lineTo(
+      boxX + Cell.TEXT_MAX_SIZE_X,
+      boxY + Cell.TEXT_MAX_SIZE_Y
+    );
+
+    // Move text to center of the box
+    this.text.x = boxX + Cell.TEXT_MAX_SIZE_X / 2 - this.text.width / 2;
+    this.text.y = boxY + 5;
   }
 
   getName() {
