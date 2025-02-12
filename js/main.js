@@ -87,7 +87,7 @@ window.onload = async () => {
       //Create unique cells for each family member
       //console.log(verticalGap);
       //Start drawing the family tree from a specific member
-      let startingID = 1;
+      let startingID = 8;
 
       let startingIDCell = familyCells.find((cell) => cell.id === startingID);
 
@@ -156,7 +156,8 @@ window.onload = async () => {
         const x = tempParentB.member.children.splice(index, 1);
       }
 
-      startDraw(app, startingID, app.canvas.width / 2, app.canvas.height / 2);
+      //startDraw(app, startingID, app.canvas.width / 2, app.canvas.height / 2);
+
       //print self(first one in center) their children their children etc. then parentA (left) then their children
       //problem cases: one parent, children from first parent should be next to each other
       // if not null (-1), remember what cell u comefrom
@@ -171,6 +172,10 @@ window.onload = async () => {
         }
       }*/
 
+      console.log('familyMembers');
+      console.log(familyMembers);
+      console.log('familyCells');
+      console.log(familyCells);
       setPositionDraw(
         app,
         startingID,
@@ -178,10 +183,7 @@ window.onload = async () => {
         app.canvas.height / 2
       );
 
-      console.log('familyMembers');
-      console.log(familyMembers);
-      console.log('familyCells');
-      console.log(familyCells);
+      positionDraw(app);
 
       tempParentA.member.children.push(tempChild);
       tempParentB.member.children.push(tempChild);
@@ -359,13 +361,35 @@ function setPositionDraw(
   if (!cell_) return;
 
   cell_.x = startX;
-  cell_.y = startY + level * spacing;
+  cell_.y = startY + level * verticalGap;
 
-  let childX = startX - ((cell_.member.children.length - 1) * spacing) / 2;
+  console.log('Children: ' + cell_.member.children.length);
 
-  for (let child of cell_.member.children) {
-    setPositionDraw(app_, child.id, childX, startY, level + 1, spacing);
+  for (let i = 0; i <= cell_.member.children.length - 1; i++) {
+    console.log('Setting: ' + cell_.member.children[i].id);
+    let childX =
+      startX -
+      Cell.TEXT_MAX_SIZE_X / 2 +
+      i * (horizontalGap + Cell.TEXT_MAX_SIZE_X);
+    setPositionDraw(
+      app_,
+      cell_.member.children[i].id,
+      childX,
+      startY,
+      level + 1
+    );
     childX += spacing;
+  }
+}
+
+function positionDraw(app_) {
+  //let cell_ = familyCells.find((cell) => cell.member.id === id_);
+
+  for (let i = 0; i <= familyCells.length - 1; i++) {
+    familyCells[i].draw();
+    familyCells[i].setCanvas(app_.canvas);
+    familyCells[i].positionSet = true;
+    app_.stage.addChild(familyCells[i].cellContainer);
   }
 }
 

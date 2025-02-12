@@ -90,11 +90,13 @@ export class Cell {
     // console.log(this.cellContainer);
   }
 
-  draw(canvasW, canvasH) {
-    this.x = canvasW; // Assign proper X position
-    this.y = canvasH; // Assign proper Y position
-
+  draw() {
     let padding = 50; // Space between cells
+
+    this.text = new PIXI.Text({
+      text: this.member.getFullName(),
+      style: this.style,
+    });
 
     let cellTopLine = new PIXI.Graphics();
     let cellBotLine = new PIXI.Graphics();
