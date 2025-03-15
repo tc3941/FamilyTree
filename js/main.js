@@ -176,7 +176,7 @@ window.onload = async () => {
       console.log(familyMembers);
       console.log('familyCells');
       console.log(familyCells);
-      setPositionDraw(
+      setPositionDrawv3(
         app,
         startingID,
         app.canvas.width / 2,
@@ -184,9 +184,8 @@ window.onload = async () => {
       );
 
       positionDraw(app);
-
-      tempParentA.member.children.push(tempChild);
-      tempParentB.member.children.push(tempChild);
+      if (tempParentA) tempParentA.member.children.push(tempChild);
+      if (tempParentB) tempParentB.member.children.push(tempChild);
       //app.stage.addChild(rootFamilyMember.cellContainer);
     })
     .catch((error) => console.error('Error loading family data:', error));
@@ -348,7 +347,7 @@ window.onload = async () => {
   });
 };
 
-function setPositionDraw(
+function setPositionDrawv2(
   app_,
   id_,
   startX,
@@ -379,6 +378,58 @@ function setPositionDraw(
       level + 1
     );
     childX += spacing;
+  }
+}
+function setPositionDrawv3(
+  app_,
+  id_,
+  startX,
+  startY,
+  level = 0,
+  spacing = horizontalGap
+) {
+  let cell_ = familyCells.find((cell) => {
+    return cell.id == id_;
+  });
+  // console.log(cell_ + ' - ' + id_);
+
+  if (!cell_) return;
+
+  cell_.x = startX;
+  cell_.y = startY + level * verticalGap;
+  //debug cell here
+  let partnerOffset = 100; // Space between partners
+  let childOffset = 150; // Space between children
+
+  if (cell_.member.partner != -1) {
+    setPositionDrawv3(
+      app_,
+      cell_.member.partner,
+      startX + partnerOffset,
+      startY,
+      level
+    );
+  }
+
+  let totalChildren = cell_.member.children.length;
+  let totalChildPartners = cell_.member.children.filter(
+    (child) => child.partner
+  ).length;
+  let totalWidth = (totalChildren + totalChildPartners) * childOffset;
+
+  let childStartX = startX - totalWidth / 2;
+  for (let child of cell_.member.children) {
+    setPositionDrawv3(app_, child.id, startX, startY + spacing, level + 1);
+    if (child.partner) {
+      setPositionDrawv3(
+        app_,
+        child.partner,
+        startX + partnerOffset,
+        startY + spacing,
+        level + 1
+      );
+    }
+    childStartX += childOffset;
   }
 }
 

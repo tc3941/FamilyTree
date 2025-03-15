@@ -12,6 +12,7 @@ export class Member {
     siblings = [],
     parentA = -1,
     parentB = -1,
+    partner = -1,
   }) {
     this.firstName = firstName;
     this.lastName = lastName;
@@ -25,6 +26,7 @@ export class Member {
     this.siblings = siblings;
     this.parentA = parentA;
     this.parentB = parentB;
+    this.partner = partner;
   }
 
   //families = [];
